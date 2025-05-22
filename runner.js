@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const c = require('ansi-colors');
 
 class Runner {
   constructor() {
@@ -8,6 +9,7 @@ class Runner {
 
   async runTests() {
     for (let file of this.testFiles) {
+      console.log(c.gray(`--- ${file.shortName}`))
       const beforeEaches = [];
       global.beforeEach = (fn) => {
         beforeEaches.push(fn);
@@ -17,10 +19,10 @@ class Runner {
         beforeEaches.forEach(func => func());
         try {
          fn();
-         console.log(`OK - ${desc}`);
+         console.log(c.green(`OK - ${desc}`));
         } catch (err) {
-          console.log(`X - ${desc}`);
-          console.log('\t',err.message);
+          console.log(c.red(`X - ${desc}`));
+          console.log(c.red('\t',err.message));
         }
       };
       // 'global' is similar to the window variable in the browser. It is available in every file and is shared between all the files
@@ -28,7 +30,7 @@ class Runner {
       try {
         require(file.name);
       } catch (err) {
-        console.log('\t',err);
+        console.log(c.red('\t',err));
       }
     }
   }
@@ -42,7 +44,7 @@ class Runner {
       const stats = await fs.promises.lstat(filepath);
 
       if (stats.isFile() && file.includes('test.js')) {
-        this.testFiles.push({ name: filepath });
+        this.testFiles.push({ name: filepath, shortName: file });
       } else if (stats.isDirectory()) {
         const childFiles = await fs.promises.readdir(filepath);
 

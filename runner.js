@@ -6,6 +6,12 @@ class Runner {
     this.testFiles = [];
   }
 
+  async runTests() {
+    for (let file of this.testFiles) {
+      require(file.name);
+    }
+  }
+
   async collectFiles(targetPath) {
 // targetPath === /users/jasdeepsingh/Documents/Code/TME
     const files = await fs.promises.readdir(targetPath);

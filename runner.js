@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const c = require('ansi-colors');
+const render = require('./render');
 
 const forbiddenDirs = ['node_modules'];
 // this is for the directories we dont want to visit/test
@@ -14,6 +15,7 @@ class Runner {
     for (let file of this.testFiles) {
       console.log(c.gray(`---- ${file.shortName}`));
       const beforeEaches = [];
+      global.render = render;
       global.beforeEach = fn => {
         beforeEaches.push(fn);
       };
